@@ -43,8 +43,8 @@ namespace FundaAssignment.Controllers
         }
 
         [HttpGet]
-        [Route("[controller]/top/{filters}")]
-        public object GetSpecific(string filters)
+        [Route("[controller]/top")]
+        public object GetSpecific([FromQuery]string filters = "amsterdam")
         {
             return _apiProvider.Call(
                 new APIRequest()

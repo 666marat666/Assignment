@@ -41,8 +41,8 @@ namespace FundaAssignment.Providers.API.Implementation
                 responseStr.Wait();
                 result = JsonConvert.DeserializeObject<APIResponse>(responseStr.Result);
                 result.Status = new APIReturnStatus() { Type = APIReturnStatusType.Success };
-            }
-            else if(httpResp.StatusCode == System.Net.HttpStatusCode.Unauthorized)//request limit
+            }            
+            else if(httpResp.StatusCode == System.Net.HttpStatusCode.Unauthorized && httpResp.ReasonPhrase.ToLowerInvariant() == "request limit exceeded")//normally should be different status code
             {
                 result.Status.Type = APIReturnStatusType.LimitExceeeded;
                 result.Status.ErrorMessage = $"Cant request base service - HTTP: {httpResp.StatusCode}";
@@ -50,7 +50,7 @@ namespace FundaAssignment.Providers.API.Implementation
             else
             {
                 result.Status.Type = APIReturnStatusType.Error;
-                result.Status.ErrorMessage = $"Cant request base service - HTTP: {httpResp.StatusCode}";
+                result.Status.ErrorMessage = $"Cant request base service - HTTP: {httpResp.StatusCode} - {httpResp.ReasonPhrase}";
             }
 
             return result;
@@ -84,8 +84,12 @@ namespace FundaAssignment.Providers.API.Implementation
                 if (result.Status.Type == APIReturnStatusType.Success)
                 {
                     yield return result;
+                }                
+                else if(result.Status.Type == APIReturnStatusType.Error)
+                {
+                    throw new Exception(result.Status.ErrorMessage);
                 }
-
+                
                 if(result.Status.Type == APIReturnStatusType.LimitExceeeded)
                 {
                     Thread.Sleep(_maxRequestsCap);

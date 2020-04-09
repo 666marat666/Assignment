@@ -38,7 +38,7 @@ export class FetchDataComponent {
 
   makeCall() {
     this.result = null;
-    this.http.get<APIResponse>(this.baseUrl + 'report/top/' + this.filters.join(",")).subscribe(result => {
+    this.http.get<APIResponse>(this.baseUrl + 'report/top?filters=' + this.filters.join(",")).subscribe(result => {
       this.result = result;
     }, error => console.error(error));
   }
