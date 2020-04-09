@@ -1,0 +1,35 @@
+<h1 id="tableLabel">Top brokers propsitions in Amsterdam</h1>
+
+
+
+<h3>Filters:</h3>
+<div id="filters">
+  <button class="btn" [class.btn-primary]="this.filters.includes('amsterdam')" value="Amsterdam" disabled>
+    <span *ngIf="!result" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    Amsterdam
+  </button>
+
+  <button class="btn" [class.btn-primary]="!this.filters.includes('tuin')" [class.btn-success]="this.filters.includes('tuin')" type="button" value="Tuin" (click)="ChangeFilters('tuin')" [class.disabled]="!result">
+    <span *ngIf="!result" class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+    Tuin
+  </button>
+</div>
+
+
+<p *ngIf="!result"><em>Loading please wait...</em></p>
+
+
+<table class='table table-striped' aria-labelledby="tableLabel" *ngIf="result">
+  <thead>
+    <tr>
+      <th>Broker name</th>
+      <th>Amount of propositions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let bInfo of result">
+      <td>{{ bInfo.name }}</td>
+      <td>{{ bInfo.count }}</td>
+    </tr>
+  </tbody>
+</table>
